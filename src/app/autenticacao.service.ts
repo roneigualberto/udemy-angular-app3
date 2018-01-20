@@ -4,8 +4,8 @@ import * as firebase from 'firebase';
 
 
 export class Autenticacao {
-    public cadastrarUsuario(usuario: Usuario):void {
-        firebase.auth()
+    public cadastrarUsuario(usuario: Usuario): Promise<any> {
+       return  firebase.auth()
         .createUserWithEmailAndPassword(usuario.email, usuario.senha)
         .then((resposta: any) => {
             delete usuario.senha;

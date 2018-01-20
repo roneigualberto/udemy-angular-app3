@@ -23,7 +23,7 @@ export class CadastroComponent implements OnInit {
     'senha': new FormControl(null)
   });
 
-  constructor(private autentiacao: Autenticacao) { }
+  constructor(private autenticacao: Autenticacao) { }
 
   ngOnInit() {
   }
@@ -41,7 +41,9 @@ export class CadastroComponent implements OnInit {
       this.formulario.value.senha
     );
 
-     this.autentiacao.cadastrarUsuario(usuario);
+     this.autenticacao.cadastrarUsuario(usuario).then((resposta: any) => {
+        this.exibirPainelLogin();
+     });
 
     console.log(usuario);
     
