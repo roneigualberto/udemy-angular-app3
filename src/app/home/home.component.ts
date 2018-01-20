@@ -10,7 +10,7 @@ import { Autenticacao } from '../autenticacao.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private autenticacao: Autenticacao) { }
 
   ngOnInit() {
   }

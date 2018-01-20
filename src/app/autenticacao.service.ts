@@ -2,6 +2,7 @@ import { Usuario } from "./acesso/usuario.model";
 import * as firebase from 'firebase';
 import { Router } from '@angular/router';
 import { Injectable } from "@angular/core";
+import { unescapeIdentifier } from "@angular/compiler";
 
 
 @Injectable()
@@ -46,11 +47,15 @@ export class Autenticacao {
         if (this.token_id === undefined && tokenInLocal != null) {
             this.token_id = tokenInLocal;
         }
+
+        if (this.token_id === undefined) {
+            this.router.navigate(['/']);
+        }
         return this.token_id !== undefined;
     }
 
 
-    public  sair(): void {
+    public sair(): void {
 
         firebase.auth().signOut().then(() => {
             localStorage.removeItem('idToken');
