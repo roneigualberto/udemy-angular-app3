@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import {ROUTES} from './app.routes';
+import { ROUTES } from './app.routes';
 
 
 import { AppComponent } from './app.component';
@@ -12,7 +12,9 @@ import { BannerComponent } from './acesso/banner/banner.component';
 import { LoginComponent } from './acesso/login/login.component';
 import { CadastroComponent } from './acesso/cadastro/cadastro.component';
 
-import {Autenticacao} from './autenticacao.service';
+import { Autenticacao } from './autenticacao.service';
+
+import { Bd } from './bd.service';
 import { HomeComponent } from './home/home.component';
 import { PublicacoesComponent } from './home/publicacoes/publicacoes.component';
 import { AutenticacaoGuard } from './autenticacao-guard.service';
@@ -36,7 +38,7 @@ import { IncluirPublicacaoComponent } from './home/incluir-publicacao/incluir-pu
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [Autenticacao, AutenticacaoGuard],
+  providers: [Autenticacao, AutenticacaoGuard, Bd],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
