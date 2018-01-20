@@ -4,6 +4,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { Bd } from '../../bd.service';
 
+import * as firebase from 'firebase';
+
 @Component({
   selector: 'app-incluir-publicacao',
   templateUrl: './incluir-publicacao.component.html',
@@ -15,14 +17,22 @@ export class IncluirPublicacaoComponent implements OnInit {
     'titulo': new FormControl(null)
   });
 
+  public email: string = '';
+
   constructor(private bd: Bd) { }
 
   ngOnInit() {
+    firebase.auth().onAuthStateChanged( (user) => {
+        this.email = user.email;
+    });
   }
 
 
   public publicar(): void {
-      this.bd.publicar();
+      this.bd.publicar({
+        email: this.email ,
+        titulo: this.formulario.value.titulo
+      });
   }
 
 }
