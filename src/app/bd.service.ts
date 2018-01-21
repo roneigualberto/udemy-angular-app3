@@ -1,10 +1,11 @@
- import * as firebase from 'firebase';
+import * as firebase from 'firebase';
 import { Injectable } from '@angular/core';
 import { Progresso } from './progresso.service';
 
 
+
 @Injectable()
- export class Bd {
+export class Bd {
 
 
     constructor(private progresso: Progresso) {
@@ -16,75 +17,82 @@ import { Progresso } from './progresso.service';
 
 
         console.log(publicacao.email);
-      
+
 
         firebase.database().ref(`publicacoes/${btoa(publicacao.email)}`)
-        .push({titulo: publicacao.titulo})
+            .push({ titulo: publicacao.titulo })
 
-        .then( (resposta: any) => {
-            let nomeImagem = resposta.key;
+            .then((resposta: any) => {
+                let nomeImagem = resposta.key;
 
-            firebase.storage().ref()
-        
-            .child(`imagens/${nomeImagem}`)
-            .put(publicacao.imagem)
-            .on(firebase.storage.TaskEvent.STATE_CHANGED,
-             (snapshot)=> {
-                console.log('sucesso',snapshot);
-                this.progresso.status = 'andamento'
-                this.progresso.estado = snapshot;
-            },
-            (error) => {
-                console.log('error',error);
-                 this.progresso.status = 'erro'
-            
-            },
-            () => {
-                console.log('upload completo')
-                this.progresso.status = 'concluido'
-            }
-        )
-        });
+                firebase.storage().ref()
 
-      
+                    .child(`imagens/${nomeImagem}`)
+                    .put(publicacao.imagem)
+                    .on(firebase.storage.TaskEvent.STATE_CHANGED,
+                    (snapshot) => {
+                        console.log('sucesso', snapshot);
+                        this.progresso.status = 'andamento'
+                        this.progresso.estado = snapshot;
+                    },
+                    (error) => {
+                        console.log('error', error);
+                        this.progresso.status = 'erro'
+
+                    },
+                    () => {
+                        console.log('upload completo')
+                        this.progresso.status = 'concluido'
+                    }
+                    )
+            });
 
 
-      
+
+
+
 
 
     }
 
-    public consultarPublicacoes(email: string) : void {
+    public consultarPublicacoes(email: string): Promise<any> {
 
-        console.log(email);
-        firebase.database().ref(`publicacoes/${btoa(email)}`)
-        .once('value')
-        .then((snapshot) => {
+        return new Promise((resolve, reject) => {
+            firebase.database().ref(`publicacoes/${btoa(email)}`)
+                .once('value')
+                .then((snapshot) => {
 
-            let publicacoes: any[] = [];
+                    let publicacoes: any[] = [];
 
-           
-            snapshot.forEach((childSnapshot) => {
-                let publicacao = childSnapshot.val();
 
-                firebase.storage().ref()
-                .child(`imagens/${childSnapshot.key}`)
-                .getDownloadURL()
-                .then( (url: string) => {
-                    publicacao.url_imagem = url;
+                    snapshot.forEach((childSnapshot) => {
+                        let publicacao = childSnapshot.val();
 
-                    firebase.database().ref(`usuario_detalhe/${btoa(email)}`)
-                    .once('value').then((snapshot)=> {
-                        publicacao.nomer_usuario = snapshot.val().nomer_usuario
-                        publicacoes.push(publicacao)
-                    })
-                    
-                });
+                        firebase.storage().ref()
+                            .child(`imagens/${childSnapshot.key}`)
+                            .getDownloadURL()
+                            .then((url: string) => {
+                                publicacao.url_imagem = url;
 
-            });
+                                firebase.database().ref(`usuario_detalhe/${btoa(email)}`)
+                                    .once('value').then((snapshot) => {
+                                        publicacao.nomer_usuario = snapshot.val().nome_usuario
+                                        publicacoes.push(publicacao);
 
-            console.log('publicacoes', publicacoes);
-        }) 
+                                    })
+
+                            });
+
+                    });
+
+                    resolve(publicacoes);
+
+
+                })
+        });
+
+
+
     }
 
 }
