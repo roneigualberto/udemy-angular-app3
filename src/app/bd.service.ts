@@ -14,32 +14,40 @@ import { Progresso } from './progresso.service';
 
     public publicar(publicacao: any): void {
 
-        let nomeImagem = Date.now();
+      
 
-        firebase.storage().ref()
+        firebase.database().ref(`publicacoes/${btoa(publicacao.email)}`)
+        .push({titulo: publicacao.titulo})
+
+        .then( (resposta: any) => {
+            let nomeImagem = resposta.key;
+
+            firebase.storage().ref()
         
-        .child(`imagens/${nomeImagem}`)
-        .put(publicacao.imagem)
-        .on(firebase.storage.TaskEvent.STATE_CHANGED,
-         (snapshot)=> {
-            console.log('sucesso',snapshot);
-            this.progresso.status = 'andamento'
-            this.progresso.estado = snapshot;
-        },
-        (error) => {
-            console.log('error',error);
-             this.progresso.status = 'erro'
-        
-        },
-        () => {
-            console.log('upload completo')
-            this.progresso.status = 'concluido'
-        }
-    )
+            .child(`imagens/${nomeImagem}`)
+            .put(publicacao.imagem)
+            .on(firebase.storage.TaskEvent.STATE_CHANGED,
+             (snapshot)=> {
+                console.log('sucesso',snapshot);
+                this.progresso.status = 'andamento'
+                this.progresso.estado = snapshot;
+            },
+            (error) => {
+                console.log('error',error);
+                 this.progresso.status = 'erro'
+            
+            },
+            () => {
+                console.log('upload completo')
+                this.progresso.status = 'concluido'
+            }
+        )
+        });
+
+      
 
 
-       /* firebase.database().ref(`publicacoes/${btoa(publicacao.email)}`)
-        .push({titulo: publicacao.titulo})*/
+      
 
 
     }

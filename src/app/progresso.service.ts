@@ -5,6 +5,10 @@ export class Progresso {
 
     public porcentagemUpload(): number {
 
+        if (this.estado === undefined) {
+            return 0;
+        }
+
         return Math.round((this.estado.bytesTransferred / this.estado.totalBytes)*100);
     }
 
