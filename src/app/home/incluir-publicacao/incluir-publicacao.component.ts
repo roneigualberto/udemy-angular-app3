@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter,Output } from '@angular/core';
 
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -19,6 +19,9 @@ import { Subject } from 'rxjs/Subject';
   styleUrls: ['./incluir-publicacao.component.css']
 })
 export class IncluirPublicacaoComponent implements OnInit {
+
+
+  public atualizarTimeLine: EventEmitter<any> = new EventEmitter<any>();
 
   public formulario: FormGroup = new FormGroup({
     'titulo': new FormControl(null)
@@ -64,6 +67,8 @@ export class IncluirPublicacaoComponent implements OnInit {
           
         if (this.progresso.status == 'concluido') {
           this.progressoPublicacao = 'concluido';
+          //emitir o evento do component
+          this.atualizarTimeLine.emit();
           continua.next(false);
         }
       })
