@@ -27,6 +27,9 @@ export class IncluirPublicacaoComponent implements OnInit {
   public email: string = '';
   private imagem: any;
 
+  public progressoPublicacao: string = 'pendente';
+  public porcentagemUpload: number;
+
   constructor(private bd: Bd, private progresso: Progresso) { }
 
   ngOnInit() {
@@ -43,7 +46,7 @@ export class IncluirPublicacaoComponent implements OnInit {
       imagem: this.imagem[0]
     });
 
-    let acompanhamentoUpload = Observable.interval(1500);
+    let acompanhamentoUpload = Observable.interval(500);
 
 
     let continua = new Subject();
@@ -55,8 +58,12 @@ export class IncluirPublicacaoComponent implements OnInit {
       .subscribe(() => {
         console.log(this.progresso.status);
         console.log(this.progresso.estado);
+        this.progressoPublicacao = 'andamento';
 
+        this.porcentagemUpload = this.progresso.porcentagemUpload();
+          
         if (this.progresso.status == 'concluido') {
+          this.progressoPublicacao = 'concluido';
           continua.next(false);
         }
       })
