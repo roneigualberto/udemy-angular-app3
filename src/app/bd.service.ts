@@ -60,7 +60,24 @@ import { Progresso } from './progresso.service';
         firebase.database().ref(`publicacoes/${btoa(email)}`)
         .once('value')
         .then((snapshot) => {
-            console.log(snapshot.val());
+
+            let publicacoes: any[] = [];
+
+           
+            snapshot.forEach((childSnapshot) => {
+                let publicacao = childSnapshot.val();
+
+                firebase.storage().ref()
+                .child(`imagens/${childSnapshot.key}`)
+                .getDownloadURL()
+                .then( (url: string) => {
+                    publicacao.url_imagem = url;
+                    publicacoes.push(publicacao)
+                });
+
+            });
+
+            console.log('publicacoes', publicacoes);
         }) 
     }
 
