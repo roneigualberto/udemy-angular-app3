@@ -76,7 +76,7 @@ export class Bd {
 
                                 firebase.database().ref(`usuario_detalhe/${btoa(email)}`)
                                     .once('value').then((snapshot) => {
-                                        publicacao.nomer_usuario = snapshot.val().nome_usuario
+                                        publicacao.nome_usuario = snapshot.val().nome_usuario
                                         publicacoes.push(publicacao);
 
                                     })
