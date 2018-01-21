@@ -14,6 +14,8 @@ import { Progresso } from './progresso.service';
 
     public publicar(publicacao: any): void {
 
+
+        console.log(publicacao.email);
       
 
         firebase.database().ref(`publicacoes/${btoa(publicacao.email)}`)
@@ -50,6 +52,16 @@ import { Progresso } from './progresso.service';
       
 
 
+    }
+
+    public consultarPublicacoes(email: string) : void {
+
+        console.log(email);
+        firebase.database().ref(`publicacoes/${btoa(email)}`)
+        .once('value')
+        .then((snapshot) => {
+            console.log(snapshot.val());
+        }) 
     }
 
 }
