@@ -72,7 +72,13 @@ import { Progresso } from './progresso.service';
                 .getDownloadURL()
                 .then( (url: string) => {
                     publicacao.url_imagem = url;
-                    publicacoes.push(publicacao)
+
+                    firebase.database().ref(`usuario_detalhe/${btoa(email)}`)
+                    .once('value').then((snapshot)=> {
+                        publicacao.nomer_usuario = snapshot.val().nomer_usuario
+                        publicacoes.push(publicacao)
+                    })
+                    
                 });
 
             });
