@@ -59,6 +59,7 @@ export class Bd {
 
         return new Promise((resolve, reject) => {
             firebase.database().ref(`publicacoes/${btoa(email)}`)
+                .orderByKey()
                 .once('value')
                 .then((snapshot) => {
 
