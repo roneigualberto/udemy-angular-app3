@@ -58,6 +58,7 @@ export class Bd {
     public consultarPublicacoes(email: string): Promise<any> {
 
         return new Promise((resolve, reject) => {
+
             firebase.database().ref(`publicacoes/${btoa(email)}`)
                 .orderByKey()
                 .once('value')
@@ -68,9 +69,19 @@ export class Bd {
 
                     snapshot.forEach((childSnapshot) => {
                         let publicacao = childSnapshot.val();
+                        publicacao.key = childSnapshot.key;
+                        publicacoes.push(publicacao);
+                    });
 
+                    return publicacoes.reverse();
+
+
+                })
+                .then((publicacoes: any) => {
+
+                    publicacoes.forEach((publicacao) => {
                         firebase.storage().ref()
-                            .child(`imagens/${childSnapshot.key}`)
+                            .child(`imagens/${publicacao.key}`)
                             .getDownloadURL()
                             .then((url: string) => {
                                 publicacao.url_imagem = url;
@@ -78,12 +89,10 @@ export class Bd {
                                 firebase.database().ref(`usuario_detalhe/${btoa(email)}`)
                                     .once('value').then((snapshot) => {
                                         publicacao.nome_usuario = snapshot.val().nome_usuario
-                                        publicacoes.push(publicacao);
 
                                     })
 
                             });
-
                     });
 
                     resolve(publicacoes);
@@ -95,5 +104,11 @@ export class Bd {
 
 
     }
+
+    /*
+          let publicacao = childSnapshot.val();
+
+                      
+    */
 
 }
